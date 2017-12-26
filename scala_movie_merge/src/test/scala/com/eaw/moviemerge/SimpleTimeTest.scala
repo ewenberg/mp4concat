@@ -1,6 +1,5 @@
 package com.eaw.moviemerge
 
-import com.eaw.simpletest.SimpleTime
 import org.scalatest.FunSuite
 
 
