@@ -11,12 +11,7 @@ import scala.io.Source
   * Created by erikwenberg on 12/26/17.
   *
   **/
-object CreateIndexFile extends App {
-
-  def printUsage(options: Options) = {
-    val fmt = new HelpFormatter()
-    fmt.printHelp("createTemplate", options)
-  }
+object CreateIndexFile extends App with CommandHelpers {
 
   def buildOptions() = {
     val options = new Options()
@@ -62,18 +57,6 @@ object CreateIndexFile extends App {
     lines
   }
 
-  def checkFile(paramName: String, location: String) = {
-    println(paramName)
-    println(location)
-    val f = new File(location)
-    if (!f.exists) {
-      println(s"ERROR: ${paramName} '${location}' does not exist...")
-      System.exit(1)
-    }
-    f
-  }
-
-
   val options = buildOptions()
 
   val parser = new DefaultParser()
@@ -82,7 +65,7 @@ object CreateIndexFile extends App {
     val cmdLine = parser.parse(options, args)
     val inputDirOpt = cmdLine.getOptionValue("inputDir")
     val extensionsOpt = cmdLine.getOptionValues("extensions")
-    val outputFileOpt = cmdLine.getOptionValue("outputDir", "chapters.txt")
+    val outputFileOpt = cmdLine.getOptionValue("outputFile", "chapters.txt")
     val inputDir = checkFile("Input Directory", inputDirOpt)
 
     val lines = createChapterList(inputDir, extensionsOpt)
@@ -94,7 +77,7 @@ object CreateIndexFile extends App {
     bw.close()
 
   } catch {
-    case t : Throwable => printUsage(options)
+    case t : Throwable => printUsage("CreateIndexFile", options)
       System.exit(1)
   }
 
