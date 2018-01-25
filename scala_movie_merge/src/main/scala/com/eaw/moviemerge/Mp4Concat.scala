@@ -36,10 +36,6 @@ object Mp4Concat extends App with CommandHelpers {
     options
   }
 
-  def showCommand() = {
-
-  }
-
   val options = buildOptions()
 
   val parser = new DefaultParser()
@@ -53,22 +49,44 @@ object Mp4Concat extends App with CommandHelpers {
     var runningDuration = SimpleTime.fromSeconds("0")
     val chapterDurations = new ListBuffer[SimpleTime]()
     val chapterStartTimes = new ListBuffer[SimpleTime]()
+    val fileNames = new ListBuffer[String]()
+    val chapterNames = new ListBuffer[String]()
 
     val fileContents = Source.fromFile(indexFileOpt).getLines().toArray
     fileContents.foreach(line => {
       val parts = line.split("\\|")
       val fileName = parts(0)
       val duration = FFProbe.duration(fileName)
+
+      fileNames += fileName
+      chapterNames += parts(1)
       chapterDurations += duration
       chapterStartTimes += runningDuration
       runningDuration = runningDuration + duration
     })
 
-    //println(runningDuration)
-    //println(chapterDurations)
-    //println(chapterStartTimes)
+    val inputFilePart = fileNames.map { s =>
+      s.replaceAll(" ", "\\ ").replaceAll("\\(", "\\\\(").replaceAll("\\)", "\\\\)")
+    }.mkString(" -i ", " -i ", "")
+    //println(inputFilePart)
+
+    val indexRange = 0 until fileNames.size
+    val indexes = indexRange.map { i =>
+      s"[${i}:0][${i}:1]"
+    }.mkString("")
+    val indexesPart = s"'${indexes}concat=n=${fileNames.size}:v=1:a=1[v][a]'"
+    //println(indexesPart)
+
+    val cmd = s"ffmpeg ${inputFilePart} -filter_complex ${indexesPart} -map [v] -map [a] -strict -2 ${outputFileOpt}"
+    println("=====================================")
+    println("  RUN THIS FFMPEG COMMAND")
+    println("=====================================")
+    println(cmd)
   } catch {
-    case t : Throwable => printUsage("Mp4Concat", options)
+    case t : Throwable => {
+      println(t)
+      printUsage("Mp4Concat", options)
+    }
       System.exit(1)
   }
 
