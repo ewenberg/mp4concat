@@ -12,6 +12,14 @@ class SimpleTimeTest extends FunSuite {
     assert("00:00:00.000" === SimpleTime(0, 0, 0).toString)
   }
 
+  test("to milliseconds") {
+    val testSubject = SimpleTime.parse("00:00:03")
+    assert(3000 == testSubject.toMilliseconds)
+
+    val testSubject2 = SimpleTime.parse("01:00:00")
+    assert(60 * 60 * 1000 == testSubject2.toMilliseconds())
+  }
+
   test("parses strings with hours") {
     val testSubject = SimpleTime.parse("01:02:15")
     assert(1 === testSubject.hours)

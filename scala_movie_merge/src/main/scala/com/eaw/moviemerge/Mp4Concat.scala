@@ -23,6 +23,20 @@ object Mp4Concat extends App with CommandHelpers {
       .required()
       .hasArg()
       .build()
+    val title = Option.builder
+      .argName("title")
+      .desc("Name of the movie")
+      .longOpt("title")
+      .required()
+      .hasArg()
+      .build()
+    val artist = Option.builder
+      .argName("artist")
+      .desc("Name of the artist")
+      .longOpt("artist")
+      .required()
+      .hasArg()
+      .build()
     val outputFile = Option.builder
       .argName("outputFile")
       .desc("Name for the new file that concatenates the input files")
@@ -32,6 +46,8 @@ object Mp4Concat extends App with CommandHelpers {
 
     options.addOption(indexFile)
     options.addOption(outputFile)
+    options.addOption(artist)
+    options.addOption(title)
 
     options
   }
@@ -44,6 +60,8 @@ object Mp4Concat extends App with CommandHelpers {
     val cmdLine = parser.parse(options, args)
     val indexFileOpt = cmdLine.getOptionValue("indexFile")
     val outputFileOpt = cmdLine.getOptionValue("outputFile", "movie.mp4")
+    val titleOpt = cmdLine.getOptionValue("title")
+    val artistOpt = cmdLine.getOptionValue("artist")
     val inputDir = checkFile("Index File", indexFileOpt)
 
     var runningDuration = SimpleTime.fromSeconds("0")
@@ -82,6 +100,26 @@ object Mp4Concat extends App with CommandHelpers {
     println("  RUN THIS FFMPEG COMMAND")
     println("=====================================")
     println(cmd)
+
+    println()
+    println()
+
+    val mdBuilder = new FFMetadataBuilder()
+    mdBuilder.withHeader(titleOpt, artistOpt)
+    chapterNames.zipWithIndex.foreach {
+      case (chapterName, idx) => {
+        val startMillis = chapterStartTimes(idx).toMilliseconds()
+        val endMillis = startMillis + chapterDurations(idx).toMilliseconds()
+        mdBuilder.addChapter(startMillis, endMillis, chapterName)
+      }
+    }
+
+    println("===================================")
+    println("  USE THIS METADATA")
+    println("===================================")
+
+    println(mdBuilder.build())
+
   } catch {
     case t : Throwable => {
       println(t)

@@ -32,6 +32,13 @@ class SimpleTime(val hours: Int, val minutes: Int, val seconds: Int, val millise
   def +(other: SimpleTime): SimpleTime = {
     SimpleTime(this.hours + other.hours, this.minutes + other.minutes, this.seconds + other.seconds, this.milliseconds + other.milliseconds)
   }
+
+  def toMilliseconds() = {
+    this.milliseconds +
+    this.seconds * 1000 +
+    this.minutes * 60 * 1000 +
+    this.hours * 60 * 60 * 1000
+  }
 }
 
 object SimpleTime {
