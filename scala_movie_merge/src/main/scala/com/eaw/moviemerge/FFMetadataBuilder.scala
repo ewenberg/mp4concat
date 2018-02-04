@@ -53,9 +53,13 @@ class FFMetadataBuilder {
 
   class Chapter(val startMillis: Integer, val endMillis: Integer, val title: String) {
     val chapterTag = "[CHAPTER]"
+    val titleTag = s"TITLE=${title}"
+    val startTag = s"START=${startMillis}"
+    val endTag = s"END=${endMillis}"
+    val timeBaseTag = s"TIMEBASE=1/1000"
 
     def build() = {
-      s"${chapterTag}\nstart=${startMillis}\nend=${endMillis}\ntitle=${title}"
+      s"${chapterTag}\n${timeBaseTag}\n${startTag}\n${endTag}\n${titleTag}"
     }
   }
 }

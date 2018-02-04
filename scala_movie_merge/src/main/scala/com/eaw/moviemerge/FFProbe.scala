@@ -13,7 +13,7 @@ object FFProbe {
   val durationRegex = """duration=(.*$)""".r
 
   def duration(fileName: String) = {
-    val result = Process(s"ffprobe -show_format ${fileName}").lineStream
+    val result = Process("ffprobe", Seq("-show_format", fileName)).lineStream
     var durationString = "0"
     result.foreach(line => {
       line match {

@@ -1,5 +1,7 @@
 package com.eaw.moviemerge
 
+import java.net.URLEncoder
+
 import org.scalatest.FunSuite
 
 /**
@@ -9,5 +11,9 @@ class FFProbeTest extends FunSuite {
 
   test("duration") {
     assert(SimpleTime.fromSeconds("261.04") === FFProbe.duration("./test.mp4"))
+  }
+
+  test("filenames with spaces") {
+    assert(SimpleTime.fromSeconds("261.04") === FFProbe.duration("./test 2.mp4"))
   }
 }

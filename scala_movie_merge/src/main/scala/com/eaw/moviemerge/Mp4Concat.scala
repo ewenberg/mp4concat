@@ -84,7 +84,7 @@ object Mp4Concat extends App with CommandHelpers {
     })
 
     val inputFilePart = fileNames.map { s =>
-      s.replaceAll(" ", "\\ ").replaceAll("\\(", "\\\\(").replaceAll("\\)", "\\\\)")
+      s.replaceAll(" ", "\\\\ ").replaceAll("\\(", "\\\\(").replaceAll("\\)", "\\\\)")
     }.mkString(" -i ", " -i ", "")
     //println(inputFilePart)
 
@@ -120,6 +120,14 @@ object Mp4Concat extends App with CommandHelpers {
 
     println(mdBuilder.build())
 
+    println("===================================")
+    println("  RUN THIS METADATA COMMAND")
+    println("===================================")
+    println("ffmpeg -i <metadata-file> -i <video-file> -codec copy <new-video-file>")
+
+
+    println(s"Running duration: ${runningDuration.toString()}")
+    
   } catch {
     case t : Throwable => {
       println(t)

@@ -33,6 +33,10 @@ class FFMetadataBuilderTest extends FunSuite {
     val output = testSubject.addChapter(1000, 2000, "ChapterTitle").build()
     println(output)
     assert(contains(output, "[CHAPTER]", 1))
+    assert(contains(output, "START=1000", 1))
+    assert(contains(output, "END=2000", 1))
+    assert(contains(output, "TITLE=ChapterTitle", 1))
+    assert(contains(output, "TIMEBASE=1/1000", 1))
   }
 
   def contains(s: String, word: String, count: Integer) = {

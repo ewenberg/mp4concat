@@ -52,7 +52,7 @@ object CreateIndexFile extends App with CommandHelpers {
     }
 
     //good ++ these.filter(_.isDirectory).flatMap(recursiveListFiles(_,r))
-    val lines = good.map(g => s"${g.toString}|${FileUtils.stripPath(g.toString)}")
+    val lines = good.map(g => s"${FileUtils.escapeChars(g.toString)}|${FileUtils.stripPath(g.toString)}")
     lines.foreach(println)
     lines
   }

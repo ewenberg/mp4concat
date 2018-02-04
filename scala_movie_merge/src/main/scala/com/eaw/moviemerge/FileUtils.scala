@@ -13,6 +13,9 @@ object FileUtils {
     parts(parts.length - 1)
   }
 
+  def escapeChars(s: String) = {
+    s.replaceAll("\\ ", "\\\\ ").replaceAll("\\(", "\\\\(").replaceAll("\\)", "\\\\)")
+  }
 
   def zip(fileNameList: List[String], trackNameList: List[String]): List[String] = {
     val zipped = fileNameList.zip(trackNameList).map(p => {
